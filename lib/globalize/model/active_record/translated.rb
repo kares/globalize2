@@ -24,7 +24,8 @@ module Globalize
               extend  ClassMethods
               
               proxy_class = Globalize::Model::ActiveRecord.create_proxy_class(self)
-              has_many :globalize_translations, :class_name => proxy_class.name, :extend => Extensions
+              has_many :globalize_translations, :class_name => proxy_class.name, :extend => Extensions,
+                       :foreign_key => "#{table_name.singularize}_id" # this handles subclasses of self
 
               after_save :update_globalize_record
               
