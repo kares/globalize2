@@ -28,6 +28,7 @@ class PluralizePluralizingTest < ActiveSupport::TestCase
     @cz_pluralizer = lambda{|c| c == 1 ? :one : (2..4).include?(c) ? :few : :other }
     @backend.store_translations :en, :foo => {:one => 'one en foo', :other => 'many en foos'}
     @backend.store_translations :cz, :foo => {:one => 'one cz foo', :few => 'few cz foos', :other => 'many cz foos'}
+    @backend.store_translations :en, :bar => {:one => 'a bar'} # missing :other on purpose
   end
 
   test "looks up the :one translation when count is 1" do
@@ -37,6 +38,14 @@ class PluralizePluralizingTest < ActiveSupport::TestCase
   test "looks up the :other translation when count is 2" do
     assert_equal 'many en foos', @backend.translate(:en, :foo, :count => 2) 
   end
+  
+  test "raises exception on missing pluralization counter key in translation" do
+    assert_equal 'a bar', @backend.translate(:en, :bar, :count => 1)
+    assert_raises I18n::InvalidPluralizationData do
+      assert_equal 'a bar', @backend.translate(:en, :bar, :count => 2)
+    end 
+  end
+  
 end
 
 class CzPluralizingTest < ActiveSupport::TestCase
