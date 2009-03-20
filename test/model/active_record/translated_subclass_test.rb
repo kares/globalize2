@@ -14,7 +14,8 @@ class TranslatedSubclassTest < ActiveSupport::TestCase
   def setup
     I18n.locale = :'en-US'
     I18n.fallbacks.clear 
-    reset_db!
+    reset_db! File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'data', 'schema.rb'))
+    ActiveRecord::Base.locale = nil
     @post = Post.create :subject => 'a post'
   end
   
