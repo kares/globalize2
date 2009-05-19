@@ -72,7 +72,7 @@ class StaticTest < ActiveSupport::TestCase
   test "returns a hash of translations" do
     assert_instance_of Hash, I18n.translate(:"buz")
   end
-  
+
   test "returns an array of translations 2" do
     assert_equal [Globalize::Translation::Static], I18n.translate(:"buz").values.map(&:class) 
   end
@@ -93,8 +93,16 @@ class StaticTest < ActiveSupport::TestCase
   end
 
   test "makes sure interpolation does not break even with False as string" do
-    assert_equal "translation missing: en, support, array, skip_last_comma", I18n.translate(:"support.array.skip_last_comma")
+    assert_equal "translation missing: en-US, support, array, skip_last_comma", I18n.translate(:"support.array.skip_last_comma")
   end
+
+  test "returns an array of symbols as string" do
+    # used in DateHelper.translated_date_order (action_pack/lib/action_view/helpers/date_helper.rb)
+    date_order = I18n.translate(:'date.order') # [:year, :month, :day]
+    assert_instance_of Array, date_order
+    date_order.each { |elem| assert_instance_of Symbol, elem }
+  end
+
 end
 
 class TranslationStaticTest < ActiveSupport::TestCase
