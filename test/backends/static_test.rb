@@ -92,8 +92,18 @@ class StaticTest < ActiveSupport::TestCase
     assert_equal "10.00 €", currency
   end
 
-  test "makes sure interpolation does not break even with False as string" do
-    assert_equal "translation missing: en-US, support, array, skip_last_comma", I18n.translate(:"support.array.skip_last_comma")
+  test "returns missing translation string for missing key" do
+    assert_equal "translation missing: de, foo, bar, huu", I18n.translate(:"foo.bar.huu", :locale => :de)
+  end
+
+  test "returns false translation" do
+    I18n.backend.store_translations :de, { :support => { :array => { :skip_last_comma => false } } }
+    assert_equal false, I18n.translate(:"support.array.skip_last_comma")
+  end
+
+  test "returns true translation" do
+    I18n.backend.store_translations :de, { :support => { :array => { :skip_last_comma => true } } }
+    assert_equal true, I18n.translate(:'support.array.skip_last_comma', :locale => :de)
   end
 
   test "returns an array of symbols as string" do

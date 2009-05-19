@@ -13,14 +13,18 @@ module Globalize
         result, default, fallback = nil, options.delete(:default), nil
         I18n.fallbacks[locale].each do |fallback|
           begin
-            result = super(fallback, key, options) and break
+            result = super(fallback, key, options)
+            break unless result.nil?
           rescue I18n::MissingTranslationData
           end
         end
-        result ||= default locale, default, options
+        result = default(locale, default, options) if result.nil?
 
         attrs = {:requested_locale => locale, :locale => fallback, :key => key, :options => options}
-        translation(result, attrs) || raise(I18n::MissingTranslationData.new(locale, key, options))
+        result = translation(result, attrs)
+
+        raise(I18n::MissingTranslationData.new(locale, key, options)) if result.nil?
+        return result
       end
 
       protected
@@ -29,11 +33,11 @@ module Globalize
         def interpolate(locale, string, values = {})
           result = orig_interpolate(locale, string, values)
           translation = translation(string)
-          translation.nil? ? result : translation.replace(result)
+          (translation.nil? || translation.equal?(result)) ? result : translation.replace(result)
         end
 
         def translation(result, meta = nil)
-          return unless result
+          return nil if result.nil? # if result == false return false
 
           case result
           when Numeric
