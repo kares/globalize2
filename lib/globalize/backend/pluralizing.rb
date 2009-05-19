@@ -27,7 +27,7 @@ module Globalize
         end
 
         def pluralizers
-          @pluralizers ||= { :en => lambda{|n| n == 1 ? :one : :other } }
+          @pluralizers ||= { :en => lambda{ |n| n == 1 ? :one : :other } }
         end
 
         # Overwrite this method to return something other than a String

@@ -38,8 +38,6 @@ module Globalize
           case result
           when Numeric
             result
-          when Symbol # e.g. DateHelper.translated_date_order might return a :year symbol
-            result
           when String
             result = Translation::Static.new(result) unless result.is_a? Translation::Static
             result.set_meta meta
