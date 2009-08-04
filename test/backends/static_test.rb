@@ -93,17 +93,17 @@ class StaticTest < ActiveSupport::TestCase
   end
 
   test "returns missing translation string for missing key" do
-    assert_equal "translation missing: de, foo, bar, huu", I18n.translate(:"foo.bar.huu", :locale => :de)
+    assert_equal "translation missing: hu, foo, bar, huu", I18n.translate(:"foo.bar.huu", :locale => :hu)
   end
 
   test "returns false translation" do
-    I18n.backend.store_translations :de, { :support => { :array => { :skip_last_comma => false } } }
-    assert_equal false, I18n.translate(:"support.array.skip_last_comma")
+    I18n.backend.store_translations :hu, { :support => { :array => { :skip_last_comma => false } } }
+    assert_equal false, I18n.translate(:"support.array.skip_last_comma", :locale => :hu)
   end
 
   test "returns true translation" do
-    I18n.backend.store_translations :de, { :support => { :array => { :skip_last_comma => true } } }
-    assert_equal true, I18n.translate(:'support.array.skip_last_comma', :locale => :de)
+    I18n.backend.store_translations :hu, { :support => { :array => { :skip_last_comma => true } } }
+    assert_equal true, I18n.translate(:'support.array.skip_last_comma', :locale => :hu)
   end
 
   test "returns an array of symbols as string" do
